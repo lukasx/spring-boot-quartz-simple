@@ -16,7 +16,10 @@
 .idea/**/sqlDataSources.xml
 .idea/**/dynamic.xml
 .idea/**/uiDesigner.xml
-
+.idea
+*.iws
+*.iml
+*.ipr
 # Gradle:
 .idea/**/gradle.xml
 .idea/**/libraries

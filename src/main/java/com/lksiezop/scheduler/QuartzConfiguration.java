@@ -10,13 +10,19 @@ import org.springframework.scheduling.quartz.JobDetailFactoryBean;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import org.springframework.scheduling.quartz.SpringBeanJobFactory;
 
+import static org.quartz.CronScheduleBuilder.cronSchedule;
 import static org.quartz.SimpleScheduleBuilder.simpleSchedule;
 
 @Configuration
 class QuartzConfiguration {
 
+    public static final String CONSTANT_TRIGGER = SimpleLogJob.NAME + "_constant";
+    public static final String CRON_TRIGGER = SimpleLogJob.NAME + "_cron";
+    public static final String CRON_EVERY_10_SECONDS = "*/10 * * * * ?";
+
     @Autowired
     private ApplicationContext applicationContext;
+
 
     @Bean
     JobDetailFactoryBean simpleLogJob() {
@@ -27,11 +33,12 @@ class QuartzConfiguration {
         return jobDetailFactory;
     }
 
-    @Bean
-    Trigger trigger(JobDetail job) {
-        return TriggerBuilder.newTrigger().forJob(job)
-                .withIdentity(SimpleLogJob.NAME)
-                .withSchedule(SimpleScheduleBuilder.repeatSecondlyForever( 10 ))
+    @Bean(name = "cronTrigger")
+    Trigger cronJobTigger(JobDetail jobDetail) {
+        return TriggerBuilder.newTrigger()
+                .forJob(jobDetail)
+                .withIdentity(CRON_TRIGGER)
+                .withSchedule(cronSchedule(CRON_EVERY_10_SECONDS))
                 .build();
     }
 

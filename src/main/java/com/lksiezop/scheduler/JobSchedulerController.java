@@ -29,8 +29,8 @@ class JobSchedulerController {
         this.schedulerManager = schedulerManager;
     }
 
-    @PostMapping("/scheduleLog")
-    ResponseEntity<ScheduleLogResponse> scheduleLog(@RequestBody @Valid ScheduleLogRequest scheduleLogRequest) {
+    @PutMapping("/log")
+    ResponseEntity<ScheduleLogResponse> logImmediate(@RequestBody @Valid ScheduleLogRequest scheduleLogRequest) {
         try {
             schedulerManager.scheduleLog(scheduleLogRequest);
             return ResponseEntity.ok(ScheduleLogResponse.OK);

@@ -14,6 +14,7 @@ import java.util.Date;
 import java.util.Optional;
 import java.util.Random;
 
+import static com.lksiezop.scheduler.QuartzConfiguration.CRON_TRIGGER;
 import static org.quartz.TriggerBuilder.newTrigger;
 import static org.quartz.TriggerKey.triggerKey;
 
@@ -40,9 +41,8 @@ class SchedulerManager {
     RescheduleLogJobResponse rescheduleLogJob(RescheduleLogJobRequest rescheduleLogJobRequest) throws JobReschedulingException {
 
         try {
-            final TriggerKey triggerKey = triggerKey(SimpleLogJob.NAME);
-            Trigger oldTrigger = scheduler.getTrigger(triggerKey);
-            final Trigger newTrigger = createNewTrigger(oldTrigger, rescheduleLogJobRequest.getCron());
+            final TriggerKey triggerKey = triggerKey(CRON_TRIGGER);
+            final Trigger newTrigger = createNewTrigger(triggerKey, rescheduleLogJobRequest.getCron());
             LocalDateTime localDateTime = Optional.ofNullable(scheduler.rescheduleJob(triggerKey, newTrigger))
                     .map(Date::toInstant)
                     .map(i->LocalDateTime.ofInstant(i, ZoneId.systemDefault()))
@@ -53,10 +53,10 @@ class SchedulerManager {
         }
     }
 
-    private Trigger createNewTrigger(Trigger oldTrigger, String cron) {
+    private Trigger createNewTrigger(TriggerKey triggerKey, String cron) {
         CronScheduleBuilder cronScheduleBuilder = CronScheduleBuilder.cronSchedule(cron);
         Trigger trigger = newTrigger()
-                .withIdentity(SimpleLogJob.NAME)
+                .withIdentity(triggerKey)
                 .withSchedule(cronScheduleBuilder)
                 .startNow()
                 .build();

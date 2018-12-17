@@ -1,4 +1,4 @@
-#Description
+# Description
 Simple spring boot project showing how to schedule Quartz jobs
 
 ## Requirements
